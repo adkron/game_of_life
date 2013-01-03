@@ -1,16 +1,25 @@
-class GameOfLife::Board
-  def self.from_string(string)
-    self.new
-  end
+module GameOfLife
+  class Board
+    attr_writer :blocks_initializer
+    attr_reader :rows
+    def initialize(rows = [])
+      @rows = rows
+    end
 
-  def initialize
-  end
+    def blocks
+      self.blocks_initializer.call @rows
+    end
 
-  def evolve
-    self
-  end
+    def evolve
+      blocks.evolve Board.new
+    end
 
-  def to_s
-    ' '
+    def blocks_initializer
+      @blocks_initializer ||= Blocks.method(:new)
+    end
+
+    def ==(other)
+      self.rows == other.rows
+    end
   end
 end
